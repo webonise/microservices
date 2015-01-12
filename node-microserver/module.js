@@ -3,9 +3,18 @@ var _ = require("underscore");
 var os = require("os");
 var assert = require("assert");
 var Promise = require("bluebird");
+var path = require("path");
+var fs = require("fs");
+
+var openAsync = Promise.promisify(fs.open, fs);
+var closeAsync = Promise.promisify(fs.close, fs);
+var unlinkAsync = Promise.promisify(fs.unlink, fs);
+
+var serverCounter = 0;
 
 var clazz = module.exports = function MicroServer(opts) {
   var my = this;
+  var serverId = serverCounter++;
 
   if (!(this instanceof arguments.callee)) {
     throw new Error("You forgot to use 'new' to instantiate the MicroServer");
@@ -18,7 +27,8 @@ var clazz = module.exports = function MicroServer(opts) {
       return res.status(501).json({working:true});
     },
     mountpoint: "/service",
-    verb: 'all'
+    verb: 'all',
+    serverId: serverId
   })).each(function(value, key) {
     my[key] = value;
     assert.ok(my[key], "Failure loading " + key);
@@ -28,6 +38,46 @@ var clazz = module.exports = function MicroServer(opts) {
   // TODO Get inheritance working.
   // When it does work, do this.app = this;
   this.app = express();
+
+
+  //
+  // tmpDir and temp file stuff
+  //
+
+  var EEXIST_ERROR_CODE = 47;
+
+  function generateTmpDir() {
+    var tmpDir = os.tmpdir();
+    _([process.title, process.pid.toString(), serverId.toString()]).each(function(segment) {
+      tmpDir = path.join(tmpDir, segment);
+      try {
+        fs.mkdirSync(tmpDir);
+      } catch(e) {
+        // May already exist; that's fine.
+        if(e.errno != EEXIST_ERROR_CODE) throw e;
+      }
+    });
+    process.on('exit', fs.unlinkSync.bind(fs, tmpDir));
+    return tmpDir;
+  }
+
+  this.tmpDir = generateTmpDir();
+
+  var fileId = 0;
+  function tempFileDisposer(me, filename,suffix) {
+    assert.ok(me.tmpDir); // Ensures that we have a tmpDir
+    filename = filename || "temp";
+    suffix = suffix || "tmp";
+    var fileName = filename + "_" + (fileId++).toString() + "." + suffix;
+    var filePath = path.join(me.tmpDir, fileName);
+    return openAsync(filePath, "wx+").disposer(function(fd) {
+      closeAsync(fd).then(unlinkAsync.bind(null, filePath));
+    });
+  }
+
+  this.withTempFile = function(filename, suffix, cb) {
+    return Promise.using(tempFileDisposer(this, filename, suffix), cb);
+  };
 
   //
   // Attach new methods

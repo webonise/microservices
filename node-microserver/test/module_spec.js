@@ -3,6 +3,7 @@ var express = require("express");
 var _ = require("underscore");
 var frisby = require("frisby");
 var os = require("os");
+var fs = require("fs");
 
 describe("Microserver", function() {
 
@@ -100,6 +101,65 @@ describe("Microserver", function() {
       .expectStatus(501)
       .expectJSON({working:true})
     .toss();
+
+  });
+
+  describe("temp fs support", function() {
+
+    var fixture;
+
+    beforeEach(function(done) {
+      fixture = new Microserver();
+      fixture.start(done);
+    });
+
+    afterEach(function(done) {
+      fixture.stop(done);
+      fixture = null;
+    });
+
+    describe("tempDir", function() {
+
+      var tmpDir;
+
+      beforeEach(function() {
+        tmpDir  = fixture.tmpDir;
+      });
+
+      it("exists", function() {
+        expect(tmpDir).toBeDefined();
+        expect(fs.existsSync(tmpDir)).toEqual(true);
+      });
+
+      it("does not use the system temp dir", function() {
+        expect(tmpDir).not.toEqual(os.tmpdir());
+      });
+
+      it("is unique per server", function() {
+        expect(tmpDir).not.toEqual(new Microserver().tmpDir);
+      });
+
+    });
+
+    describe("withTempFile", function() {
+
+      it("exists and is a function", function() {
+        expect(fixture.withTempFile).toBeDefined();
+        expect(fixture.withTempFile).toBeA(Function);
+      });
+
+      describe("callback file descriptor", function() {
+
+        it("exists and is a file descriptor", function(done) {
+          done = _.once(done);
+          fixture.withTempFile(null, null, function(fd) {
+            expect(fd).toBeDefined();
+          }).catch(done).finally(function() { done(); });
+        });
+
+      });
+
+    });
 
   });
 
