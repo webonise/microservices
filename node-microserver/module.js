@@ -92,7 +92,7 @@ var clazz = module.exports = function MicroServer(opts) {
   if(!_.isNull(this.handler)) {
     // Use a delegate so that changes to the handler are detected
     var middleware = function handlerDelegate(req,res) {
-      return this.handler(req,res);
+      return my.handler(req,res);
     };
     assert.ok(this.verb);
     assert.ok(this.mountpoint);
