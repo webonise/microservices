@@ -1,3 +1,4 @@
+// Imports
 var express = require("express");
 var _ = require("underscore");
 var os = require("os");
@@ -6,9 +7,26 @@ var Promise = require("bluebird");
 var path = require("path");
 var fs = require("fs");
 
+// I don't like mangling the "fs" namespace.
 var openAsync = Promise.promisify(fs.open, fs);
 var closeAsync = Promise.promisify(fs.close, fs);
 var unlinkAsync = Promise.promisify(fs.unlink, fs);
+
+// Track the files to delete here
+// In a previous implementation, we had a handler per file to delete, but Node complained.
+var deleteOnExit = (function() {
+  var deleteMe = [];
+  process.on('exit', function() {
+    _(deleteMe).each(function(tmpDir) {
+      try {
+        fs.unlinkSync(tmpDir);
+      } catch(ignored) {}
+    });
+  });
+  return function(fileToDelete) {
+    deleteMe.push(fileToDelete);
+  };
+})();
 
 var serverCounter = 0;
 
@@ -57,7 +75,7 @@ var clazz = module.exports = function MicroServer(opts) {
         if(e.errno != EEXIST_ERROR_CODE) throw e;
       }
     });
-    process.on('exit', fs.unlinkSync.bind(fs, tmpDir));
+    deleteOnExit(tmpDir);
     return tmpDir;
   }
 
