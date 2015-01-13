@@ -25,6 +25,7 @@ var myService = new MicroServer({ // Argument is optional; defaults are given be
 });
 myService.app // The Express app, for all your customization needs
 myService.start();
+myService.server // The HTTP server, which exists between "start" and "stop".
 myService.stop();
 ```
 
@@ -35,12 +36,26 @@ There is an [Express app](http://expressjs.com/api.html#application) on the `app
 `myService`. Once you call `myService.start()`, you can also get a handle on the server under
 the `server` property.
 
-If you want to stop the server, call `myService.
+Temporary File Support
+-------------------------
+
+The server has its own temporary directory named under the `myService.tmpDir` property. The server will
+create its temporary files there. If you want its temporary files to go somewhere else, assign this property.
+However, if you reassign this property, you are taking responsibility for ensuring that the directory exists
+and cleaning up the directory when done. (The server will provide and clean up the default directory for you.)
+
+If you want access to a file, call `myService.withTempFie(prefix, suffix, cb)`. The final argument (`cb`) is
+a callback that will get two arguments: the temporary file descriptor and then the path to the temporary file.
+The callback is expected to return a value, a Promise, or a Thenable (see
+the [Bluebird API for `resolve`](https://github.com/petkaantonov/bluebird/blob/master/API.md#promiseresolvedynamic-value---promise)).
+When that resolves, the temporary file will be deleted.
 
 Note
 -----
 
-This class would inherit from
+This class would inherit from the Express Application class, enabling you to manipulate the express app
+without having to do `.app`, except there is no such class. Our hacky efforts based on manipulating
+`__proto__` or `prototype` have proved fruitless, but we would welcome a pull request.
 
 Provided Functionality
 =======================
