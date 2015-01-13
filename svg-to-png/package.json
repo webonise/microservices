@@ -1,0 +1,39 @@
+{
+  "name": "svg-to-png-microserver",
+  "version": "0.0.1",
+  "description": "Microservice for converting SVG to PNG",
+  "main": "server.js",
+  "scripts": {
+    "test": "jasmine-node --color --captureExceptions --verbose test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/webonise/microservices.git"
+  },
+  "keywords": [
+    "SVG",
+    "PNG",
+    "conversion",
+    "microservice"
+  ],
+  "author": "Webonise Lab",
+  "license": "The Unlicense",
+  "bugs": {
+    "url": "https://github.com/webonise/microservices/issues"
+  },
+  "homepage": "https://github.com/webonise/microservices",
+  "devDependencies": {
+    "UnderscoreMatchersForJasmine": "0.0.5",
+    "frisby": "^0.8.5",
+    "needle": "^0.7.10"
+  },
+  "dependencies": {
+    "bluebird": "^2.6.2",
+    "configise": "^0.2.1",
+    "express": "^4.10.7",
+    "microserver": "0.0.3",
+    "svg-to-png": "^1.1.0",
+    "underscore": "^1.7.0",
+    "winston": "^0.8.3"
+  }
+}
