@@ -157,6 +157,33 @@ describe("Microserver", function() {
 
     });
 
+    describe("tempSubdir(subdir)", function() {
+
+      var tmpDir;
+
+      beforeEach(function() {
+        tmpDir = fixture.tmpSubdir("foo");
+      });
+
+      it("exists", function() {
+        expect(tmpDir).toBeDefined();
+        expect(fs.existsSync(tmpDir)).toEqual(true);
+      });
+
+      it("does not use the system temp dir", function() {
+        expect(tmpDir).not.toEqual(os.tmpdir());
+      });
+
+      it("does not use the server temp dir", function() {
+        expect(tmpDir).not.toEqual(fixture.tmpDir);
+      });
+
+      it("is a subdir of the server temp dir", function() {
+        expect(startsWith(tmpDir, fixture.tmpDir)).toEqual(true);
+      });
+
+    });
+
     describe("withTempFile", function() {
 
       it("exists and is a function", function() {

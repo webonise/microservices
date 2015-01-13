@@ -21,7 +21,8 @@ var myService = new MicroServer({ // Argument is optional; defaults are given be
   port: 9876   // What port to listen in on
   handler: function(req,res) { res.status(501).json({working:true}); }, // Express middleware
   mountpoint: "/service", // The endpoint where to mount the handler
-  verb: 'all' // Which HTTP method(s) to support: see http://expressjs.com/api.html#app.METHOD
+  verb: 'all', // Which HTTP method(s) to support: see http://expressjs.com/api.html#app.METHOD
+  multerOpts: undefined // File upload control -- see https://github.com/expressjs/multer
 });
 myService.app // The Express app, for all your customization needs
 myService.start();
@@ -36,6 +37,10 @@ There is an [Express app](http://expressjs.com/api.html#application) on the `app
 `myService`. Once you call `myService.start()`, you can also get a handle on the server under
 the `server` property.
 
+The Express app ships with the following bits of middleware installed:
+
+* [multer](https://github.com/expressjs/multer) to support multipart file uploads
+
 Temporary File Support
 -------------------------
 
@@ -43,6 +48,10 @@ The server has its own temporary directory named under the `myService.tmpDir` pr
 create its temporary files there. If you want its temporary files to go somewhere else, assign this property.
 However, if you reassign this property, you are taking responsibility for ensuring that the directory exists
 and cleaning up the directory when done. (The server will provide and clean up the default directory for you.)
+
+If you want to create a subdirectory in the temp dir, use `myService.tmpSubdir('my-subdir')`. This will create
+a folder named 'my-subdir' within the temporary directory folder. Currently, only one layer of temporary
+directories are allowed.
 
 If you want access to a file, call `myService.withTempFie(prefix, suffix, cb)`. The final argument (`cb`) is
 a callback that will get two arguments: the temporary file descriptor and then the path to the temporary file.

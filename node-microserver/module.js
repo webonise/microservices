@@ -1,5 +1,6 @@
 // Imports
 var express = require("express");
+var multer  = require('multer');
 var _ = require("underscore");
 var os = require("os");
 var assert = require("assert");
@@ -23,9 +24,9 @@ var deleteOnExit = (function() {
       } catch(ignored) {}
     });
   });
-  return function(fileToDelete) {
+  return _.memoize(function(fileToDelete) {
     deleteMe.push(fileToDelete);
-  };
+  });
 })();
 
 var serverCounter = 0;
@@ -46,16 +47,17 @@ var clazz = module.exports = function MicroServer(opts) {
     },
     mountpoint: "/service",
     verb: 'all',
-    serverId: serverId
+    serverId: serverId,
+    multerOpts: undefined
   })).each(function(value, key) {
     my[key] = value;
-    assert.ok(my[key], "Failure loading " + key);
   });
 
   // Inheritance just wasn't working here.
   // TODO Get inheritance working.
   // When it does work, do this.app = this;
   this.app = express();
+  this.app.use(multer(this.multerOpts));
 
 
   //
@@ -64,22 +66,32 @@ var clazz = module.exports = function MicroServer(opts) {
 
   var EEXIST_ERROR_CODE = 47;
 
+  function mkSubdir(parentDir, subDir) {
+    var dir = path.join(parentDir, subDir);
+    try {
+      fs.mkdirSync(dir);
+    } catch(e) {
+      // May already exist; that's fine.
+      if(e.errno != EEXIST_ERROR_CODE) throw e;
+    }
+    return dir;
+  }
+
   function generateTmpDir() {
     var tmpDir = os.tmpdir();
-    _([process.title, process.pid.toString(), serverId.toString()]).each(function(segment) {
-      tmpDir = path.join(tmpDir, segment);
-      try {
-        fs.mkdirSync(tmpDir);
-      } catch(e) {
-        // May already exist; that's fine.
-        if(e.errno != EEXIST_ERROR_CODE) throw e;
-      }
+    _([process.title, process.pid.toString() + "-" + serverId.toString()]).each(function(subdir) {
+      tmpDir = mkSubdir(tmpDir, subdir);
     });
     deleteOnExit(tmpDir);
     return tmpDir;
   }
 
   this.tmpDir = generateTmpDir();
+  this.tmpSubdir = function(subdir) {
+    var dir = mkSubdir(this.tmpDir, subdir);
+    deleteOnExit(dir);
+    return dir;
+  };
 
   var fileId = 0;
   function tempFileDisposer(me, filename, suffix, wantFileDescriptor) {
