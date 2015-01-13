@@ -26,14 +26,13 @@
     "UnderscoreMatchersForJasmine": "0.0.5",
     "frisby": "^0.8.5",
     "gm": "^1.17.0",
-    "needle": "^0.7.10",
-    "png.js": "^0.1.1"
+    "needle": "^0.7.10"
   },
   "dependencies": {
     "bluebird": "^2.6.2",
     "configise": "^0.2.1",
     "express": "^4.10.7",
-    "microserver": "0.0.3",
+    "microserver": "0.0.4",
     "svg-to-png": "^1.1.0",
     "underscore": "^1.7.0",
     "winston": "^0.8.3"

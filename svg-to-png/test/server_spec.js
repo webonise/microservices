@@ -13,7 +13,7 @@ Promise.promisifyAll(needle);
 Promise.promisifyAll(gm);
 
 // Disable the server so that we can start and stop it in between runs
-describe("SVG to PDF Microserver", function() {
+describe("SVG to PNG Microserver", function() {
 
   beforeEach(function(done) {
     done = _.once(done);
@@ -55,10 +55,10 @@ describe("SVG to PDF Microserver", function() {
       .expectStatus(404)
     .toss();
 
-    //
+    // The actual conversion code
     describe("/convert", function() {
 
-      it("should convert a sample SVG to PDF", promiseDone(function() {
+      it("should convert a sample SVG to PNG", promiseDone(function() {
         var data = {
           file: {
             file: './test/data/Example.svg',
@@ -66,13 +66,27 @@ describe("SVG to PDF Microserver", function() {
           }
         };
 
+        var svgImage = gm(data.file.file);
+        Promise.promisifyAll(svgImage);
+
         return needle.postAsync(baseUrl + "/convert", data, {multipart: true})
           .spread(function(res, body) {
-            console.dir(res);
             expect(res.statusCode).toEqual(200);
             expect(res.headers['content-type']).toEqual("image/png");
             return body;
-          }) // TODO Validate the body
+          }).then(function(body) {
+            var image = gm(body, "image.png");
+            Promise.promisifyAll(image);
+            return Promise.all([
+              svgImage.sizeAsync(), image.sizeAsync()
+            ]).spread(function(svgSize, pngSize) {
+              console.log("SVG Size: " + svgSize);
+              console.log("PNG Size: " + pngSize);
+              expect(pngSize.width).toEqual(svgSize.width);
+              expect(pngSize.height).toEqual(svgSize.height);
+              return image;
+            });
+          });
       }));
 
     });
