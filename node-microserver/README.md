@@ -115,3 +115,11 @@ GET /ping
 Simply returns `{pong:true}`. If you want to customize that value, override the `ping` method: the
 response from `/ping` is the JSON of the return value from the `ping` method. This is intended as
 an absolute minimal check of performance.
+
+TODO
+======
+
+* Integrate Configise for customization.
+* Add logging.
+* Add the ability to do HTTP BASIC auth with a username/password stored in Configise.
+* Add a body parser for JSON
