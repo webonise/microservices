@@ -50,6 +50,22 @@ The callback is expected to return a value, a Promise, or a Thenable (see
 the [Bluebird API for `resolve`](https://github.com/petkaantonov/bluebird/blob/master/API.md#promiseresolvedynamic-value---promise)).
 When that resolves, the temporary file will be deleted.
 
+```javascript
+Promise.promisifyAll(fs);
+
+myService.withTempFile("foo", null, function(fd, filePath) {
+  var buffer = new Buffer("Hello, World!");
+  return fd.writeAsync(fd, buffer, 0, buffer.length, null).tap(function() {
+    console.log("Wrote the buffer out to " + filePath + " => " + fs.readFileSync(filePath));
+  });
+});
+```
+
+For More Details
+----------------
+
+See the tests under `./test`.
+
 Note
 -----
 

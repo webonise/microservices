@@ -5,6 +5,9 @@ _.string = require("underscore.string");
 var frisby = require("frisby");
 var os = require("os");
 var fs = require("fs");
+var Promise = require("bluebird");
+
+Promise.promisifyAll(fs);
 
 var startsWith = _.string.startsWith.bind(_.string);
 var contains = _.string.contains.bind(_.string);
@@ -193,6 +196,22 @@ describe("Microserver", function() {
           return fixture.withTempFile(null, "foo", function(fd, filePath) {
             console.log("Suffix check file name: " + filePath);
             expect(endsWith(filePath, "foo")).toEqual(true);
+          });
+        }));
+
+      });
+
+      describe("the demo in the README", function() {
+
+        it("should work", promiseDone(function() {
+          return fixture.withTempFile("foo", null, function(fd, filePath) {
+            var string = "Hello, World!\n";
+            var buffer = new Buffer(string);
+            return fs.writeAsync(fd, buffer, 0, buffer.length, null).tap(function() {
+              var readBack = fs.readFileSync(filePath, {encoding:"UTF-8"});
+              console.log("Wrote the buffer out to " + filePath + " => " + readBack);
+              expect(readBack).toEqual(string);
+            });
           });
         }));
 
