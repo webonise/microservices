@@ -1,6 +1,6 @@
 {
   "name": "microserver",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A base class providing common configuration and infrastructure for a microservice.",
   "main": "module.js",
   "scripts": {
