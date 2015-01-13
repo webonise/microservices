@@ -28,3 +28,6 @@ node_modules
 .lock-wscript
 
 .DS_Store
+
+# Ignore VI swap files
+.*.swp
