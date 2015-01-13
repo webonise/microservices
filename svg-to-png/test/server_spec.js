@@ -5,12 +5,28 @@ var frisby = require("frisby");
 var os = require("os");
 var needle = require("needle");
 var Promise = require("bluebird");
+var gm = require("gm"); // GraphicsMagick
 
 // Configure Needle to have Promise methods and run promptly
 needle.defaults({ timeout: 1000, user_agent: 'Unit-Tests/0.0.0' });
 Promise.promisifyAll(needle);
+Promise.promisifyAll(gm);
 
+// Disable the server so that we can start and stop it in between runs
 describe("SVG to PDF Microserver", function() {
+
+  beforeEach(function(done) {
+    done = _.once(done);
+    try {
+      server.start(done);
+    } catch(ignore) {
+      done();
+    }
+  });
+
+  afterEach(function(done) {
+    server.stop(done);
+  });
 
   it("should exist", function() {
     expect(server).toBeDefined();
@@ -42,7 +58,7 @@ describe("SVG to PDF Microserver", function() {
     //
     describe("/convert", function() {
 
-      it("should convert a sample SVG to PDF", function(done) {
+      it("should convert a sample SVG to PDF", promiseDone(function() {
         var data = {
           file: {
             file: './test/data/Example.svg',
@@ -50,13 +66,14 @@ describe("SVG to PDF Microserver", function() {
           }
         };
 
-        needle.postAsync(baseUrl + "/convert", data, {multipart: true})
+        return needle.postAsync(baseUrl + "/convert", data, {multipart: true})
           .spread(function(res, body) {
+            console.dir(res);
             expect(res.statusCode).toEqual(200);
+            expect(res.headers['content-type']).toEqual("image/png");
             return body;
           }) // TODO Validate the body
-          .done(done);
-      });
+      }));
 
     });
 

@@ -15,7 +15,7 @@ function convert(bytesOrFileName, cb) {
 }
 
 function convertHandler(req,res) {
-  res.sendStatus(501);
+  res.sendStatus(200);
 }
 
 var server = new MicroServer({
@@ -25,3 +25,5 @@ var server = new MicroServer({
 server.start();
 
 logger.info("Started!");
+
+if(module && module.exports) module.exports = server;
