@@ -32,7 +32,7 @@ var serverCounter = 0;
 
 var clazz = module.exports = function MicroServer(opts) {
   var my = this;
-  var serverId = serverCounter++;
+  var serverId = ++serverCounter;
 
   if (!(this instanceof arguments.callee)) {
     throw new Error("You forgot to use 'new' to instantiate the MicroServer");

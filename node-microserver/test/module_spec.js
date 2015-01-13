@@ -62,6 +62,14 @@ describe("Microserver", function() {
 
   });
 
+  describe("the construction options", function() {
+
+    it("can assign a new handler", function() {
+      new Microserver({handler: function(req,res) {}});
+    });
+
+  });
+
   describe("default APIs", function() {
 
     var baseUrl = "http://localhost:9876";
