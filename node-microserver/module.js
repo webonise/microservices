@@ -82,19 +82,26 @@ var clazz = module.exports = function MicroServer(opts) {
   this.tmpDir = generateTmpDir();
 
   var fileId = 0;
-  function tempFileDisposer(me, filename,suffix) {
+  function tempFileDisposer(me, filename, suffix, wantFileDescriptor) {
     assert.ok(me.tmpDir); // Ensures that we have a tmpDir
     filename = filename || "temp";
     suffix = suffix || "tmp";
     var fileName = filename + "_" + (fileId++).toString() + "." + suffix;
     var filePath = path.join(me.tmpDir, fileName);
-    return openAsync(filePath, "wx+").disposer(function(fd) {
+    return openAsync(filePath, "wx+").then(function(fd) {
+      return [fd,filePath];
+    }).disposer(function(fdAndFilePath) {
+      var fd = fdAndFilePath[0];
+      var filePath = fdAndFilePath[1];
       closeAsync(fd).then(unlinkAsync.bind(null, filePath));
     });
   }
 
+  // Callback is passed two arguments: first, the fd (which should be preferred); second, the file path.
   this.withTempFile = function(filename, suffix, cb) {
-    return Promise.using(tempFileDisposer(this, filename, suffix), cb);
+    return Promise.using(tempFileDisposer(this, filename, suffix), function(fdAndFilePath) {
+       return cb(fdAndFilePath[0], fdAndFilePath[1]);
+    });
   };
 
   //

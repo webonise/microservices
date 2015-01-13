@@ -1,9 +1,14 @@
 var Microserver = require("../module");
 var express = require("express");
 var _ = require("underscore");
+_.string = require("underscore.string");
 var frisby = require("frisby");
 var os = require("os");
 var fs = require("fs");
+
+var startsWith = _.string.startsWith.bind(_.string);
+var contains = _.string.contains.bind(_.string);
+var endsWith = _.string.endsWith.bind(_.string);
 
 describe("Microserver", function() {
 
@@ -150,12 +155,46 @@ describe("Microserver", function() {
 
       describe("callback file descriptor", function() {
 
-        it("exists and is a file descriptor", function(done) {
-          done = _.once(done);
-          fixture.withTempFile(null, null, function(fd) {
+        it("exists", promiseDone(function() {
+          return fixture.withTempFile(null, null, function(fd) {
             expect(fd).toBeDefined();
-          }).catch(done).finally(function() { done(); });
+          });
+        }));
+
+        // Closest thing that a typecheck that Node lets us do
+        it("can be written to", function(done) {
+          fixture.withTempFile(null, null, function(fd) {
+            var buffer = new Buffer("foo bar");
+            fs.write(fd, buffer, 0, buffer.length, null, done);
+          });
         });
+
+      });
+
+      describe("callback file path", function() {
+
+        it("exists", promiseDone(function() {
+          return fixture.withTempFile(null, null, function(fd, filePath) {
+            expect(filePath).toBeDefined();
+            expect(filePath).not.toBeEmpty();
+            expect(fs.existsSync(filePath)).toEqual(true);
+          });
+        }));
+
+        it("takes the prefix", promiseDone(function() {
+          return fixture.withTempFile("foo", null, function(fd, filePath) {
+            console.log("Prefix check file name: " + filePath);
+            // TODO We can do better by deresolving against the tmpdir.
+            expect(contains(filePath, "foo_")).toEqual(true);
+          });
+        }));
+
+        it("ends with the suffix", promiseDone(function() {
+          return fixture.withTempFile(null, "foo", function(fd, filePath) {
+            console.log("Suffix check file name: " + filePath);
+            expect(endsWith(filePath, "foo")).toEqual(true);
+          });
+        }));
 
       });
 
