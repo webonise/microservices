@@ -24,7 +24,8 @@
   "homepage": "https://github.com/webonise/microservices",
   "devDependencies": {
     "UnderscoreMatchersForJasmine": "0.0.5",
-    "frisby": "^0.8.5"
+    "frisby": "^0.8.5",
+    "underscore.string": "^2.4.0"
   },
   "dependencies": {
     "bluebird": "^2.6.2",
