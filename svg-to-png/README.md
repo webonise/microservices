@@ -8,7 +8,8 @@ Usage
 --------
 
 Put the files in this folder on your server. Install Node.js and `npm`. Run `npm install` in this folder. Run `node server.js` to run the server. The server
-will be running on port 9876.
+will be running on port 9876. Post an SVG file in a multipart form upload to `/convert`: it should be in the `file` parameter. (The `test.html` file demonstrates
+doing this from HTML.) The responses will be the SVG file converted into PNG.
 
 TODO
 --------
