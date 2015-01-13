@@ -100,7 +100,7 @@ var clazz = module.exports = function MicroServer(opts) {
   // Callback is passed two arguments: first, the fd (which should be preferred); second, the file path.
   this.withTempFile = function(filename, suffix, cb) {
     return Promise.using(tempFileDisposer(this, filename, suffix), function(fdAndFilePath) {
-       return cb(fdAndFilePath[0], fdAndFilePath[1]);
+       return Promise.resolve(cb(fdAndFilePath[0], fdAndFilePath[1]));
     });
   };
 
