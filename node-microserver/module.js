@@ -7,6 +7,7 @@ var assert = require("assert");
 var Promise = require("bluebird");
 var path = require("path");
 var fs = require("fs");
+var config = require("configise");
 
 // I don't like mangling the "fs" namespace.
 var openAsync = Promise.promisify(fs.open, fs);
@@ -59,6 +60,8 @@ var clazz = module.exports = function MicroServer(opts) {
   this.app = express();
   this.app.use(multer(this.multerOpts));
 
+  // attach the configuration
+  this.config = config;
 
   //
   // tmpDir and temp file stuff

@@ -41,6 +41,12 @@ The Express app ships with the following bits of middleware installed:
 
 * [multer](https://github.com/expressjs/multer) to support multipart file uploads
 
+Configuration Support
+-----------------------
+
+The server will use [`Configise`](http://github.com/webonise/configise) for configuration. The loaded configuration
+is available under the `myService.config` property.
+
 Temporary File Support
 -------------------------
 
@@ -119,7 +125,6 @@ an absolute minimal check of performance.
 TODO
 ======
 
-* Integrate Configise for customization.
 * Add logging.
 * Add the ability to do HTTP BASIC auth with a username/password stored in Configise.
 * Add a body parser for JSON
