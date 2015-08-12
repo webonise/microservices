@@ -5,6 +5,7 @@ var frisby = require("frisby");
 var os = require("os");
 var needle = require("needle");
 var Promise = require("bluebird");
+var easyimage = require("easyimage");
 
 // Configure Needle to have Promise methods and run promptly
 needle.defaults({ timeout: 1000, user_agent: 'Unit-Tests/0.0.0' });
