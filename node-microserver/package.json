@@ -30,7 +30,7 @@
   "dependencies": {
     "bluebird": "^2.6.2",
     "configise": "^0.2.3",
-    "express": "^4.10.7",
+    "express": "^4.13.3",
     "multer": "^0.1.7",
     "underscore": "^1.7.0"
   }
