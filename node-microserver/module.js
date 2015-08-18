@@ -1,7 +1,7 @@
 // Imports
 var express = require("express");
 var multer  = require('multer');
-var _ = require("underscore");
+var _ = require("lodash");
 var os = require("os");
 var assert = require("assert");
 var Promise = require("bluebird");

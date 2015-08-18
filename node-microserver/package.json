@@ -31,7 +31,7 @@
     "bluebird": "^2.6.2",
     "configise": "^0.2.3",
     "express": "^4.13.3",
-    "multer": "^0.1.7",
-    "underscore": "^1.7.0"
+    "lodash": "^3.10.1",
+    "multer": "^0.1.7"
   }
 }
