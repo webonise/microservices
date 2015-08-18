@@ -67,7 +67,7 @@ var clazz = module.exports = function MicroServer(opts) {
   // tmpDir and temp file stuff
   //
 
-  var EEXIST_ERROR_CODE = 47;
+  var EEXIST_ERROR_CODE = "EEXIST";
 
   function mkSubdir(parentDir, subDir) {
     var dir = path.join(parentDir, subDir);
@@ -75,7 +75,9 @@ var clazz = module.exports = function MicroServer(opts) {
       fs.mkdirSync(dir);
     } catch(e) {
       // May already exist; that's fine.
-      if(e.errno != EEXIST_ERROR_CODE) throw e;
+      if(e.code != EEXIST_ERROR_CODE) {
+        throw e;
+      }
     }
     return dir;
   }
