@@ -1,6 +1,6 @@
 {
   "name": "microserver",
-  "version": "0.0.4",
+  "version": "0.0.6",
   "description": "A base class providing common configuration and infrastructure for a microservice.",
   "main": "module.js",
   "scripts": {
@@ -17,7 +17,7 @@
     "microservice"
   ],
   "author": "Webonise Lab",
-  "license": "The Unlicense",
+  "license": "Unlicense",
   "bugs": {
     "url": "https://github.com/webonise/microservices/issues"
   },
@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "bluebird": "^2.6.2",
+    "configise": "^0.2.3",
     "express": "^4.10.7",
     "multer": "^0.1.7",
     "underscore": "^1.7.0"
