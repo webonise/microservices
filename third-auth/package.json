@@ -1,0 +1,43 @@
+{
+  "name": "third-auth-microserver",
+  "version": "0.0.1",
+  "description": "Microservice for performing logins to third parties",
+  "main": "server.js",
+  "scripts": {
+    "test": "jasmine-node --color --captureExceptions --verbose test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/webonise/microservices.git"
+  },
+  "readme": "README.md",
+  "keywords": [],
+  "author": "Webonise Lab",
+  "license": "Unlicense",
+  "bugs": {
+    "url": "https://github.com/webonise/microservices/issues"
+  },
+  "homepage": "https://github.com/webonise/microservices",
+  "devDependencies": {
+    "UnderscoreMatchersForJasmine": "0.0.5",
+    "frisby": "^0.8.5",
+    "gm": "^1.17.0",
+    "needle": "^0.7.10"
+  },
+  "dependencies": {
+    "bluebird": "^2.9.34",
+    "body-parser": "^1.13.3",
+    "configise": "^0.2.3",
+    "connect-redis": "^2.4.1",
+    "cookie-parser": "^1.3.5",
+    "express-session": "^1.11.3",
+    "lodash": "^3.10.1",
+    "microserver": "0.0.6",
+    "node-uuid": "^1.4.3",
+    "passport": "^0.2.2",
+    "passport-twitter": "^1.0.3",
+    "redis": "^0.12.1",
+    "then-redis": "^1.3.0",
+    "winston": "^0.8.3"
+  }
+}
