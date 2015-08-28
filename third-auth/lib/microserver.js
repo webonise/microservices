@@ -50,6 +50,18 @@ _.each(config.platforms, function(platformKey) {
 });
 
 /*
+* User serialization
+* We shouldn't be using session, but I couldn't get things to work without it!
+*/
+passport.serializeUser(function(userId, done) {
+  done(null, userId);
+});
+passport.deserializeUser(function(id, done) {
+  done(null, id);
+});
+
+
+/*
 * Establish the entrance point
 */
 app.get("/enter", function(req, res) {
