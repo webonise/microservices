@@ -9,9 +9,9 @@ var func = module.exports = {};
 func.storeAuth = function storeAuth(done, platform, platformId, profile, auth) {
   log.info("Storing authentication for " + platform + " user " + platformId);
   Promise.all([
-    redis.createToken("twitter", platformId),
-    redis.storeAuth("twitter", platformId, auth),
-    redis.storeProfile("twitter", platformId, profile)
+    redis.createToken(platform, platformId),
+    redis.storeAuth(platform, platformId, auth),
+    redis.storeProfile(platform, platformId, profile)
   ]).spread(function(uuid, ignoreEverythingElse) {
     done(null, uuid);
   }).catch(function(err) {
