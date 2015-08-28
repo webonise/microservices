@@ -12,13 +12,32 @@ You now get to have third-party authentication without having to implement any o
 Usage
 ======
 
-Pick your third party authentication system of choice, and look up its key in the list below. For the examples that follow, we will assume
-the key for the third party authentication system is 'foobar'.
+* Set up Redis somewhere both your app and the microservice have access to it.
+* Have your app redirect the user to `/entry.html?platform=foobar&callback=url-encoded-return-url`
+  * `platform` => the key for the platform you want to authenticate against (see below)
+  * `callback` => the URL-encoded location to redirect the user to when authentication is successful
+* On successful authentication, the user will be redirected to the URL specified by `callback` with a query parameter of `authToken`.
+* Look up the value of `authToken` in `Redis`. This will give you a key consisting of the playform key, a colon (`:`), and then the user id. In
+the example that follows, assume that key was `twitter:123456789`.
+* There are three keys in Redis based in that key.
+  * `twitter:123456789` - Contains the most recent authentication token generated for this user.
+  * `twitter:123456789:auth` - Contains authentication information, which is platform-specific.
+  * `twitter:123456789:profile` - The profile provided with that user, which is also platform-specific, but with [some standards](http://passportjs.org/docs/profile).
+
+Platform Keys
+===============
+
+* *Twitter* => `twitter`
+* *Facebook* => `facebook`
 
 Configuration
 =================
 
 This microservice uses [Configise](http://github.com/webonise/configise/) for configuration. The configuration options are as follows:
 
+* `baseUrl` - The base URL for the microservice, necessary to generate callback URLs for OAuth.
+* `platforms` - The platforms to load in this microservice.
+* `redisSession` - Redis configuration
 * `cookieSecret` — The secret to use for signing cookies.
-* `authKeyTtlSeconds` — How long an authentication key should live after it is created, in seconds.
+
+In addition, there are specific configuration hashes for the various platforms, keyed off the platform keys.
