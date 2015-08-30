@@ -27,8 +27,21 @@ the example that follows, assume that key was `twitter:123456789`.
 Platform Keys
 ===============
 
-* *Twitter* => `twitter`
-* *Facebook* => `facebook`
+* [*Twitter*](https://dev.twitter.com/) => `twitter`
+* [*Facebook*](https://developers.facebook.com/) => `facebook`
+
+Not (Yet) Implemented
+----------------------
+* *Google* (via OAuth) => `google`
+* *Amazon* => `amazon`
+* *DropBox* => `dropbox`
+* *PayPal* (via OAuth) => `paypal`
+* *Disqus* => `disqus`
+* *Spotify* => `spotify`
+* *Soundcloud* => `soundcloud`
+* *Beatport* => `beatport`
+* *Rdio* => `rdio`
+* *Mixcloud* => `mixcloud`
 
 Configuration
 =================
