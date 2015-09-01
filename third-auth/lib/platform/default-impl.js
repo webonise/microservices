@@ -20,11 +20,12 @@ func.storeAuth = function storeAuth(done, platform, platformId, profile, auth) {
   });
 };
 
-func.attachPaths = function attachPaths(platform, app, calloutArguments) {
+func.attachPaths = function attachPaths(platform, app, calloutArguments, passportKey) {
+  passportKey = passportKey || platform;
   calloutArguments = calloutArguments || {};
   calloutArguments.session = false;
-  app.get("/auth/" + platform, passport.authenticate(platform, calloutArguments));
-  app.get("/auth/" + platform + "/callback", passport.authenticate(platform, {session: false}),
+  app.get("/auth/" + platform, passport.authenticate(passportKey, calloutArguments));
+  app.get("/auth/" + platform + "/callback", passport.authenticate(passportKey, {session: false}),
     function authenticationSuccess(req, res) {
       var uuid = req.user;
       res.redirect("/exit?authToken=" + uuid);
