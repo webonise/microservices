@@ -29,10 +29,10 @@ Platform Keys
 
 * [*Twitter*](https://dev.twitter.com/) => `twitter`
 * [*Facebook*](https://developers.facebook.com/) => `facebook`
+* [*Google* (via OAuth)](https://console.developers.google.com/project) => `google`
 
 Not (Yet) Implemented
 ----------------------
-* *Google* (via OAuth) => `google`
 * *Amazon* => `amazon`
 * *DropBox* => `dropbox`
 * *PayPal* (via OAuth) => `paypal`
