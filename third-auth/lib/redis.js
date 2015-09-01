@@ -11,10 +11,12 @@ var timeout = 60 * 60 * 24; // Expire after one day
 
 // Provide a managed redis connection, caching just one client
 // (Simpler than a pool, but with almost all the advantages.)
+// Note that more than one client can be around, if multiple clients
+// are active at the same time. But we only cache one *IDLE* client.
 var cachedClient = null;
-setInterval(function() {  // Don't let a cached client get too stale.
+setInterval(function() {  // Don't let a cached idle client get too stale.
   if(cachedClient) {      // (Yes, this will wipe out non-stale clients, too,
-    cachedClient.quit();  // if they happen to be around when the interval
+    cachedClient.quit();  // if they are unfortunately around when the interval
     cachedClient = null;  // fires. That's an acceptable ineffeciency to avoid
   }                       // bookkeeping since new connections are cheap-ish.)
 }, 1000).unref();
