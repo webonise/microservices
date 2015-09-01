@@ -13,6 +13,7 @@ Usage
 ======
 
 * Set up Redis somewhere both your app and the microservice have access to it.
+  * Make sure your Redis has the `allkeys-lru` eviction policy, or it will eventually run out of memory.
 * Have your app redirect the user to `/entry.html?platform=foobar&callback=url-encoded-return-url`
   * `platform` => the key for the platform you want to authenticate against (see below)
   * `callback` => the URL-encoded location to redirect the user to when authentication is successful
